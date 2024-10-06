@@ -1,4 +1,7 @@
 import React from "react";
+
+
+
 import { Tooltip } from "@material-tailwind/react";
 import { Avatar } from "@material-tailwind/react";
 import avatar from '../../assets/images/avatar.jpg';
@@ -24,11 +27,12 @@ const UserLinks = () => {
   <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
 </svg>
         </diV>
-        <div className="mx-4 items-center">
+        <div className="mx-4 flex items-center">
+        <img className="h-10 " size="sm" src={avatar} alt="avatar"></img>
        {/*<Tooltip content="Sign Out" placement="bottom">
           <Avatar src={avatar} size="sm" alt="avatar" />
         </Tooltip>*/}
-            <p className="ml-4 font-roboto text-sm text-black font-medium no-underline">
+            <p className="ml-4 font-roboto text-sm text-black font-medium no-underline ">
             User
             </p>
         </div>

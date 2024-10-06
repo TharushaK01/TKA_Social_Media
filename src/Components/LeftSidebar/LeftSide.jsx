@@ -1,6 +1,9 @@
 import React, {useRef, useState, useEffect} from "react";
 import sample from "../../assets/images/sample.jpg";
 
+
+import avatar from '../../assets/images/avatar.jpg';
+
 import job from "../../assets/images/job.jpg";
 import location from "../../assets/images/location.jpeg";
 import facebook from "../../assets/images/facebook.jpeg";
@@ -87,6 +90,10 @@ const LeftSide = () => {
             className="h-28 w-full rounded-r-xl"
             src={sample} alt="sample"
             ></img>
+
+            <div className="absolute -bottom-4">
+            <img className="h-10 " size="sm" src={avatar} alt="avatar"></img>
+            </div>
 
            {/* <div className="absolute -bottom-4">
 

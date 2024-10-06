@@ -1,10 +1,12 @@
 import React from "react";
 
-
+import avatar from "../../assets/images/avatar.jpg";
+import button from "../../assets/images/button.png";
 
 import live from "../../assets/images/live.jpg";
 import feeling from "../../assets/images/feeling.jpg";
 import addImage from "../../assets/images/addImage.jpg";
+
 
 {/*import { Avatar } from "@material-tailwind/react";*/}
 {/* import { Button } from "@material-tailwind/react"; */}
@@ -15,6 +17,7 @@ const Main = () => {
     <div className="flex flex-col items-center">
         <div className="flex flex-col py-4 w-full bg-white rounded-3xl shadow-lg">
             <div className="flex items-center border-b-2 border-gray-300 pb-4 pl-4 w-full">
+            <img className="h-10 mr-4" size="sm" src={avatar} alt="avatar"></img>
                {/*  <Avatar
                 size="sm"
                 variant="circular"
@@ -32,6 +35,9 @@ const Main = () => {
                             </input>
                         </div>
                         <div className="mx-4">{/* Previous Image */}</div>
+                        <div className="mr-4">
+                        <img className="h-10 mr-4"  size="sm" src={button} alt="button"></img>
+                        </div>
                        {/*  <div className="mr-4">
                             <Button variant="text" type="submit">
                                 Share</Button>
