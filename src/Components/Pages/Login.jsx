@@ -2,6 +2,9 @@ import React from 'react';
 
 
 
+
+
+
 const Login = () => {
   return ( 
         <div className='flex justify-center items-center h-screen bg-gray-200'>
@@ -20,7 +23,6 @@ const Login = () => {
            <div className= 'ml-2 mr-2'>
             <label for='password' class='block text-base mb-2 text-lg'>Password</label>
             <input type='password' id='password' className='w-full border rounded-xl text-base px-2 py-1 focus:outline-none focus;ring-0 focus:border-gray-600' placeholder='Enter password'></input>
-            </div>
            </div>
            <div>
             <div className='mt-3 ml-5 flex justify-between itmes-center'>
@@ -45,7 +47,8 @@ const Login = () => {
            </div>
           </div>
         </div>
-  )
-}
+        </div>
+  );
+};
 
-export default Login
+export default Login;
