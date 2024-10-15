@@ -27,7 +27,9 @@ const Login = () => {
             Remeber Me <input name="Remeber Me" />
       </label>
       <div className='mt-3'>
+        <Link to="/Reset">
         <button className='font-semibold'>Forgot Password?</button>
+        </Link>
         </div>
             </div>
             <div className='ml-2 p-6 flex flex-col gap-y-6'>

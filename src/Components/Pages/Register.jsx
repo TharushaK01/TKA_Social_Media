@@ -20,26 +20,26 @@ const Register = () => {
         </div>
 ):(
   <div className='flex justify-center items-center h-screen bg-gray-200'>
-    <div className='w-96 px-10 py-10 shadow-lg bg-white rounded-md border-b-2 border-gray-300'>
+    <div className='px-40 py-10 shadow-lg bg-white rounded-md border-b-2 border-gray-300'>
       <h1 className='text-3xl block text-center font-semibold text-transparent bg-clip-text bg-gradient-to-r to-red-500 from-blue-900'> REGISTER </h1>
       <span>{/*  */}</span>
 
-      <div className='mt-3 py-2'>
-     <div className= ' ml-2 mr-2'>
+      <div className='mt-3 px-30'>
+     <div className= ''>
       <label for='name' className='block text-base mb-2 text-lg'>Name</label>
       <input type='text' id='name' className='w-full border rounded-xl text-base px-2 py-1 focus:outline-none focus;ring-0 focus:border-gray-600' placeholder='Enter name'></input>
       </div>
      </div>
       
-     <div className='mt-3 py-2'>
-     <div className= ' ml-2 mr-2'>
+     <div className='mt-3 px-30'>
+     <div className= ''>
       <label for='email' className='block text-base mb-2 text-lg'>Email</label>
       <input type='text' id='email' className='w-full border rounded-xl text-base px-2 py-1 focus:outline-none focus;ring-0 focus:border-gray-600' placeholder='Enter email'></input>
       </div>
      </div>
 
-     <div className='mt-3 py-2'>
-     <div className= 'ml-2 mr-2'>
+     <div className='mt-3 px-30'>
+     <div className= ''>
       <label for='password' className='block text-base mb-2 text-lg'>Password</label>
       <input type='password' id='password' className='w-full border rounded-xl text-base px-2 py-1 focus:outline-none focus;ring-0 focus:border-gray-600' placeholder='Enter password'></input>
      </div>
