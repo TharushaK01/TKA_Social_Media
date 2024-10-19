@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from "react";
+import React, {useRef, useState, useEffect, useContext} from "react";
 import sample from "../../assets/images/sample.jpg";
 
 
@@ -12,6 +12,7 @@ import laptop from "../../assets/images/laptop.jpg";
 import media from "../../assets/images/media.jpg";
 import apps from "../../assets/images/apps.jpg";
 import tik from "../../assets/images/tik.jpg";
+import { AuthContext } from "../AppContext/AppContext";
 
 
 {/*import { Tooltip } from "@material-tailwind/react";
@@ -24,6 +25,7 @@ const LeftSide = () => {
     
     const [data, setData] = useState([]);
     const count = useRef(0);
+    const { user, userData } = useContext(AuthContext);
 
     const handleRandom = (arr) => {
         setData(arr[Math.floor(Math.random() *arr?.length)]);
@@ -106,7 +108,7 @@ const LeftSide = () => {
         </div>
         <div className="flex flex-col items-center pt-6">
             <p className="font-roboto font-medium text-md text-gray-700 no-underline tracking-normal leading-none">
-                User email
+                {user?.email || userData?.email}
             </p>
 
             <p className="font-roboto font-medium text-md text-gray-700 no-underline tracking-normal leading-none py-2">

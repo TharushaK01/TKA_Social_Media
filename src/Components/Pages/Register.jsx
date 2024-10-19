@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { ClipLoader } from 'react-spinners/ClipLoader' 
+import { AuthContext } from '../AppContext/AppContext';
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
+  const { registerWithEmailAndPassword } = useContext(AuthContext);
+  const navigate = useNavigate();
 
  const handleRegister = (e) => {
     e.preventDefault();
