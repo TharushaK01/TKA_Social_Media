@@ -13,21 +13,22 @@ import { postsReducer, postActions, postsStates, } from "../AppContext/postReduc
 import { type } from "@testing-library/user-event/dist/type";
 
 
+
 {/*import { Avatar } from "@material-tailwind/react";*/}
 {/* import { Button } from "@material-tailwind/react"; */}
 
-
+ 
 const Main = () => {
-    const { user, userData } = useContext(AuthContext);
+   const { user, userData } = useContext(AuthContext);
     const text = useRef("");
-    const [image, setImage] = useState(null);
+    {/* const [image, setImage] = useState(null);
     const collectionRef = collection(db, "posts");
     const postRef = doc (collection(db, "posts"));
     const document = postRef.id;
     const [state, dispatch] = useReducer(postsReducer, postsStates);
     const [SUBMIT_POST, HANDLE_ERROR] = postActions;
 
-    const handleSubmitPost = async (e) => {
+     const handleSubmitPost = async (e) => {
         try {
             if(text.current.value !=="") {
                 await setDoc(postRef, {
@@ -50,7 +51,7 @@ const Main = () => {
             alert(err.message);
             console.log(err.message);
         }
-    };
+    };*/}
 
 
   return (
@@ -67,13 +68,14 @@ const Main = () => {
                 <form className="w-full">
                     <div className="flex justify-between items-center">
                         <div className="w-full ml-4">
-                            <input
-                            type="text"
-                            name="text"
-                            placeholder="Whats on your mind"
-                            className="outline-none w-full bg-white rounded-md"
-                            ref={text}>
-                            </input>
+                        <input
+                         type="text"
+                         name="text"
+                         placeholder={`What's on your mind ${user?.displayName?.split(" ")[0] || (userData?.name?.charAt(0).toUpperCase() + userData?.name?.slice(1))}`}
+                         className="outline-none w-full bg-white rounded-md"
+                         ref={text}
+                        />
+                            {/* ()  */}
                         </div>
                         <div className="mx-4">{/* Previous Image */}</div>
                         <div className="mr-4">
