@@ -69,12 +69,15 @@ const Main = () => {
                     <div className="flex justify-between items-center">
                         <div className="w-full ml-4">
                         <input
-                         type="text"
-                         name="text"
-                         placeholder={`What's on your mind ${user?.displayName?.split(" ")[0] || (userData?.name?.charAt(0).toUpperCase() + userData?.name?.slice(1))}`}
-                         className="outline-none w-full bg-white rounded-md"
-                         ref={text}
+                        type="text"
+                        name="text"
+                        placeholder={`What's on your mind ${
+                        user?.displayName?.split(" ")[0] || (userData?.name ? userData.name.charAt(0).toUpperCase() + userData.name.slice(1) : "")
+                        }`}
+                        className="outline-none w-full bg-white rounded-md"
+                        ref={text}
                         />
+
                             {/* ()  */}
                         </div>
                         <div className="mx-4">{/* Previous Image */}</div>
