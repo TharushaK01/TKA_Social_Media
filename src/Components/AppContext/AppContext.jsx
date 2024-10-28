@@ -121,9 +121,6 @@ const AppContext = ({ children }) => {
         userData: userData,
     };
 
-    console.log("user", user);
-    console.log("userdata", userData);
-
   return (
     <div>
         <AuthContext.Provider value={initialState}>

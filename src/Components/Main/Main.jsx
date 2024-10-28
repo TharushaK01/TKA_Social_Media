@@ -1,36 +1,38 @@
-import React, { useRef, useContext, useState, useReducer} from "react";
-
+import React, { useRef, useContext, useState, useReducer, useEffect } from "react";
 import avatar from "../../assets/images/avatar.jpg";
-import button from "../../assets/images/button.png";
-
 import live from "../../assets/images/live.jpg";
 import feeling from "../../assets/images/feeling.jpg";
 import addImage from "../../assets/images/addImage.jpg";
 import { AuthContext } from "../AppContext/AppContext";
-import { doc, setDoc, collection, documentId, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, collection, serverTimestamp, query, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase"; 
-import { postsReducer, postActions, postsStates, } from "../AppContext/postReducer";
-import { type } from "@testing-library/user-event/dist/type";
+import { postsReducer, postActions, postsStates } from "../AppContext/postReducer";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { progress } from "@material-tailwind/react";
 
-
-
-{/*import { Avatar } from "@material-tailwind/react";*/}
-{/* import { Button } from "@material-tailwind/react"; */}
-
- 
 const Main = () => {
-   const { user, userData } = useContext(AuthContext);
+    const { user, userData } = useContext(AuthContext);
     const text = useRef("");
-    {/* const [image, setImage] = useState(null);
-    const collectionRef = collection(db, "posts");
-    const postRef = doc (collection(db, "posts"));
-    const document = postRef.id;
-    const [state, dispatch] = useReducer(postsReducer, postsStates);
-    const [SUBMIT_POST, HANDLE_ERROR] = postActions;
+    const scrollRef = useRef(null);
+    const [image, setImage] = useState(null);
+    const [file, setFile] = useState(null);
+    const [progressBar, setProgressBar] = useState(0);
 
-     const handleSubmitPost = async (e) => {
-        try {
-            if(text.current.value !=="") {
+    const collectionRef = collection(db, "posts");
+    const postRef = doc(collection(db, "posts"));
+    const document = postRef.id;
+
+    const [state, dispatch] = useReducer(postsReducer, postsStates);
+    const { SUBMIT_POST, HANDLE_ERROR } = postActions;
+
+    const handleUpload = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const handleSubmitPost = async (e) => {
+        e.preventDefault();
+        if (text.current.value !== "") {
+            try {
                 await setDoc(postRef, {
                     documentId: document,
                     uid: user?.uid || userData?.uid,
@@ -42,91 +44,124 @@ const Main = () => {
                     timestamp: serverTimestamp(),
                 });
                 text.current.value = "";
-            } else {
-                dispatch({type: HANDLE_ERROR});
+            } catch (err) {
+                dispatch({ type: HANDLE_ERROR });
+                alert(err.message);
+                console.log(err.message);
             }
+        } else {
+            dispatch({ type: HANDLE_ERROR });
+        }
+    };
 
+    const submitImage = async () => {
+        const storage = getStorage();
+        const fileType = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/svg"].includes(file?.type);
+
+        if (!file || !fileType) return;
+
+        try {
+            const storageRef = ref(storage, `image/${file.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on("state_changed", (snapshot) => {
+                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                setProgressBar(progress);
+            }, 
+            (error) => {
+                alert(error);
+            },
+            async () => {
+                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                setImage(downloadURL);
+            });
         } catch (err) {
-            dispatch({type: HANDLE_ERROR});
+            dispatch({ type: HANDLE_ERROR });
             alert(err.message);
             console.log(err.message);
         }
-    };*/}
+    };
+
+    useEffect(() => {
+        const postData = async () => {
+            const q = query(collectionRef, orderBy("timestamp", "asc"));
+            await onSnapshot(q, (snapshot) => {
+                dispatch({
+                    type: SUBMIT_POST,
+                    posts: snapshot.docs.map((doc) => doc.data()),
+                });
+
+                if (scrollRef.current && typeof scrollRef.current.scrollIntoView === "function") {
+                    scrollRef.current.scrollIntoView({ behavior: "smooth" });
+                }
+
+                setImage(null);
+                setFile(null);
+                setProgressBar(0);
+            });
+        };
+
+        return () => postData();
+    }, [SUBMIT_POST]);
+
+    return (
+        <div className="flex flex-col items-center">
+            <div className="flex flex-col py-4 w-full bg-white rounded-3xl shadow-lg">
+                <div className="flex items-center border-b-2 border-gray-300 pb-4 pl-4 w-full">
+                    <img className="h-10 mr-4" src={avatar} alt="avatar" />
 
 
-  return (
-    <div className="flex flex-col items-center">
-        <div className="flex flex-col py-4 w-full bg-white rounded-3xl shadow-lg">
-            <div className="flex items-center border-b-2 border-gray-300 pb-4 pl-4 w-full">
-            <img className="h-10 mr-4" size="sm" src={avatar} alt="avatar"></img>
-               {/*  <Avatar
-                size="sm"
-                variant="circular"
-                src="../../assets/images/avatar.jpg"
-                alt="avatar"
-                ></Avatar>*/}
-                <form className="w-full">
-                    <div className="flex justify-between items-center">
-                        <div className="w-full ml-4">
-                        <input
-                        type="text"
-                        name="text"
-                        placeholder={`What's on your mind ${
-                        user?.displayName?.split(" ")[0] || (userData?.name ? userData.name.charAt(0).toUpperCase() + userData.name.slice(1) : "")
-                        }`}
-                        className="outline-none w-full bg-white rounded-md"
-                        ref={text}
-                        />
-
-                            {/* ()  */}
+                       <form className="w-full relative pl-2" onSubmit={handleSubmitPost}>
+                        <div className="flex items-center space-x-2">
+                            <input
+                                type="text"
+                                name="text"
+                                placeholder={`What's on your mind ${
+                                    user?.displayName?.split(" ")[0] || userData?.name || ""
+                                }?`}
+                                className="outline-none w-full bg-white rounded-md px-2" 
+                                ref={text}
+                            />
+                            {image && (
+                                <img className="h-10 rounded-md" src={image} alt="previewImage" />
+                            )}
+                            <button 
+                                className="h-8 font-semibold text-md text-[#0177b7] absolute right-[3%] ml-4" 
+                                type="submit"
+                            >
+                                Share
+                            </button>
                         </div>
-                        <div className="mx-4">{/* Previous Image */}</div>
-                        <div className="mr-4">
-                        <button className="h-10 mr-4 font-bold text-md text-[#0177b7]"  size="sm">Share</button>
-                        </div>
-                        
-                       {/*  <div className="mr-4">
-                            <Button variant="text" type="submit">
-                                Share</Button>
-                        </div> */}
+                    </form>
+
+                </div>
+
+                <span style={{ width: `${progressBar}%` }} className="bg-blue-700 py-1 rounded-md"></span>
+
+                <div className="flex justify-around items-center pt-4">
+                    <label htmlFor="addImage" className="cursor-pointer flex items-center">
+                        <img className="h-10 mr-4" src={addImage} alt="addImage" />
+                        <input id="addImage" type="file" style={{ display: "none" }} onChange={handleUpload} />
+                    </label>
+                    {file && (<button variant="text" onClick={submitImage}>Upload</button>)}
+
+                    <div className="flex items-center">
+                        <img className="h-10 mr-4" src={live} alt="live" />
+                        <p className="font-roboto font-medium text-md text-gray-700">Live</p>
                     </div>
-                </form>
-            </div>
-            <span>{/* ProgressBar */}</span>
-            <div className="flex justify-around items-center pt-4">
-                <div className="flex itmes-center">
-                    <labbel
-                    htmlFor="addImage"
-                    className="cursor-pointer flex items-center">
-                        <img className="h-10 mr-4" src={addImage} alt="addImage"></img>
-                        <input
-                        id="addImage"
-                        type="file"
-                        style= {{ display: "none"}}
-                        ></input>
-                    </labbel>
-                    {/* <Button variant="text">Upload<Button>*/}
-                </div>
-                <div className="flex items-center">
-                    <img className="h-10 mr-4" src={live} alt="live"></img>
-                    <p className="font-roboto font-medium text-md text-gray-700 no-underline tracking-normal leading-none">
-                        Live
-                    </p>
-                </div>
-                <div className="flex items-center">
-                    <img className="h-10 mr-4" src={feeling} alt="feeling"></img>
-                    <p className="font-roboto font-medium text-md text-gray-700 no-underline tracking-normal leading-none">
-                        Feeling
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div className="flex flex-col py-4 w-full">{/* posts */}</div>
-        <div>
-            {/* refference for later */}
-        </div>
-    </div>
-  )
-}
 
-export default Main
+                    <div className="flex items-center">
+                        <img className="h-10 mr-4" src={feeling} alt="feeling" />
+                        <p className="font-roboto font-medium text-md text-gray-700">Feeling</p>
+                    </div>
+                </div>
+            </div>
+
+            <div ref={scrollRef} className="flex flex-col py-4 w-full">{/* posts */}</div>
+            <div ref={scrollRef}>{/*refferences for later */}</div>
+
+        </div>
+    );
+};
+
+export default Main;
