@@ -123,10 +123,11 @@ const AppContext = ({ children }) => {
 
   return (
     <div>
-        <AuthContext.Provider value={initialState}>
-            {children}
-        </AuthContext.Provider>
+        <AuthContext.Provider value={{ registerWithEmailAndPassword }}>
+         {children}
+         </AuthContext.Provider>
     </div>
+    
   );
 };
  

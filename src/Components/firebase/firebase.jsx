@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import onAuthStateChanged
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "firebase/auth"; // Import onAuthStateChanged
 
 // Your web app's Firebase configuration
 const firebaseConfig = {

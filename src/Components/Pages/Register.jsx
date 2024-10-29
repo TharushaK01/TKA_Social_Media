@@ -1,8 +1,9 @@
+// src/pages/Register.js
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ClipLoader } from 'react-spinners/ClipLoader';
+import { ClipLoader } from 'react-spinners';
 import { AuthContext } from '../AppContext/AppContext';
-import { db } from '../../Components/firebase/firebase'; // Ensure this path is correct
+import { db } from "../firebase/firebase"; 
 import { collection, addDoc } from 'firebase/firestore';
 
 const Register = () => {
@@ -25,11 +26,10 @@ const Register = () => {
         return;
       }
 
-      console.log('Email:', email);
-      console.log('Password:', password);
-      
+      // Register user with email and password
       const userCredential = await registerWithEmailAndPassword(email, password);
       
+      // Store additional user information in Firestore
       const userRef = collection(db, 'users');
       await addDoc(userRef, {
         uid: userCredential.user.uid,
@@ -40,6 +40,7 @@ const Register = () => {
       navigate('/'); // Navigate after successful registration
     } catch (error) {
       console.error('Error registering user:', error.message);
+      alert(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }
