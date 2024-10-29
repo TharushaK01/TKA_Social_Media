@@ -48,6 +48,7 @@ const PostCards = ({uid, id, logo, name, email, text, image, timestamp}) => {
                         Delete
                     </p>
                 </div>
+                {/*AddFriendImage */}
             </div>
         </div>
     </div>

@@ -32,26 +32,40 @@ const Main = () => {
 
     const handleSubmitPost = async (e) => {
         e.preventDefault();
+
+           // Check if `user` or `userData` is defined and contains `uid`
+    const uid = user?.uid || userData?.uid;
+    const logo = user?.photoURL || userData?.logo;
+    const name = user?.displayName || userData?.name;
+    const email = user?.email || userData?.email;
+
+    if (!uid) {
+        alert("User not authenticated. Please log in.");
+        return;
+    }
+
+
         if (text.current.value !== "") {
             try {
                 await setDoc(postRef, {
-                    documentId: document,
-                    uid: user?.uid || userData?.uid,
-                    logo: user?.photoURL,
-                    name: user?.displayName || userData?.name,
-                    email: user?.email || userData?.email,
+                    uid: uid, // Ensures uid is defined
+                    logo: logo,
+                    name: name,
+                    email: email,
                     text: text.current.value,
                     image: image,
                     timestamp: serverTimestamp(),
                 });
                 text.current.value = "";
+                setImage(null); // Reset image after successful upload
             } catch (err) {
                 dispatch({ type: HANDLE_ERROR });
-                alert(err.message);
+                alert(`Error: ${err.message}`);
                 console.log(err.message);
             }
         } else {
             dispatch({ type: HANDLE_ERROR });
+            alert("Text field cannot be empty.");
         }
     };
 
@@ -111,7 +125,6 @@ const Main = () => {
                 <div className="flex items-center border-b-2 border-gray-300 pb-4 pl-4 w-full">
                     <img className="h-10 mr-4" src={avatar} alt="avatar" />
 
-
                        <form className="w-full relative pl-2" onSubmit={handleSubmitPost}>
                         <div className="flex items-center space-x-2">
                             <input
@@ -134,7 +147,6 @@ const Main = () => {
                             </button>
                         </div>
                     </form>
-
                 </div>
 
                 <span style={{ width: `${progressBar}%` }} className="bg-blue-700 py-1 rounded-md"></span>
@@ -158,37 +170,34 @@ const Main = () => {
                 </div>
             </div>
 
-            <div ref={scrollRef} className="flex flex-col py-4 w-full">{state.error ? (
-                <div className="flex justify-center items-center">
-                    <Alert color="red">
-                        Something went wrong refresh and try again...
-                    </Alert>
-                </div>
-            ) : (
-                <div>
-                    {state.posts.length > 0 &&
-                    state?.posts?.map((post, index) =>{
-                        return(
-                            <PostCards
-                            key={index}
-                            logo={post.logo}
-                            id={post.documentId}
-                            uid={post?.uid}
-                            name={post.name}
-                            email={post.email}
-                            image={post.image}
-                            text={post.text}
-                            //timestamp={
-                                //new Date(post?.timestamp?.toDate()?.toUTCString())
-                           // }
-                            ></PostCards>  
-                        );
-                    })}
-                </div>
-            )}
+            <div ref={scrollRef} className="flex flex-col py-4 w-full">
+                {state.error ? (
+                    <div className="flex justify-center items-center">
+                        <Alert color="red">
+                            Something went wrong refresh and try again...
+                        </Alert>
+                    </div>
+                ) : (
+                    <div>
+                        {state.posts.length > 0 &&
+                        state?.posts?.map((post, index) =>{
+                            return(
+                                <PostCards
+                                    key={index}
+                                    logo={post.logo}
+                                    id={post.documentId}
+                                    uid={post?.uid}
+                                    name={post.name}
+                                    email={post.email}
+                                    image={post.image}
+                                    text={post.text}
+                                    timestamp={post.timestamp ? new Date(post.timestamp.toDate()).toUTCString() : ''}
+                                />
+                            );
+                        })}
+                    </div>
+                )}
             </div>
-            <div ref={scrollRef}>{/*refferences for later */}</div>
-
         </div>
     );
 };
