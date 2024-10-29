@@ -8,7 +8,8 @@ import { doc, setDoc, collection, serverTimestamp, query, orderBy, onSnapshot } 
 import { db } from "../firebase/firebase"; 
 import { postsReducer, postActions, postsStates } from "../AppContext/postReducer";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { progress } from "@material-tailwind/react";
+import { Alert } from "@material-tailwind/react";
+import PostCards from "./PostCards";
 
 const Main = () => {
     const { user, userData } = useContext(AuthContext);
@@ -157,7 +158,35 @@ const Main = () => {
                 </div>
             </div>
 
-            <div ref={scrollRef} className="flex flex-col py-4 w-full">{/* posts */}</div>
+            <div ref={scrollRef} className="flex flex-col py-4 w-full">{state.error ? (
+                <div className="flex justify-center items-center">
+                    <Alert color="red">
+                        Something went wrong refresh and try again...
+                    </Alert>
+                </div>
+            ) : (
+                <div>
+                    {state.posts.length > 0 &&
+                    state?.posts?.map((post, index) =>{
+                        return(
+                            <PostCards
+                            key={index}
+                            logo={post.logo}
+                            id={post.documentId}
+                            uid={post?.uid}
+                            name={post.name}
+                            email={post.email}
+                            image={post.image}
+                            text={post.text}
+                            //timestamp={
+                                //new Date(post?.timestamp?.toDate()?.toUTCString())
+                           // }
+                            ></PostCards>  
+                        );
+                    })}
+                </div>
+            )}
+            </div>
             <div ref={scrollRef}>{/*refferences for later */}</div>
 
         </div>
