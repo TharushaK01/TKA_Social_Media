@@ -7,6 +7,7 @@ import Reset from "./Reset";
 
 
 
+
 const Pages = () => {
     return (
     <div>
@@ -15,6 +16,7 @@ const Pages = () => {
             <Route path="/login" element= {<Login></Login>} ></Route>
             <Route path="/register" element={<Register></Register>}></Route>
             <Route path="/reset" element={<Reset></Reset>}></Route>
+            
         </Routes>
     </div>
     );
