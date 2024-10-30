@@ -1,6 +1,5 @@
 import React from 'react';
 import AuthProvider from './Components/AppContext/AppContext';
-import Register from './Components/Pages/Register';
 import './App.css';
 import Pages from './Components/Pages/Pages';
 import { BrowserRouter } from 'react-router-dom';
@@ -12,7 +11,6 @@ function App() {
         <BrowserRouter>
         <AppContext>
         <AuthProvider>
-        <Register />
         <Pages></Pages>
         </AuthProvider>
         </AppContext>

@@ -1,46 +1,29 @@
 // src/pages/Register.js
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
-import { AuthContext } from '../AppContext/AppContext';
-import { db } from "../firebase/firebase"; 
-import { collection, addDoc } from 'firebase/firestore';
+import { auth } from '../firebase/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { registerWithEmailAndPassword } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Validate email and password
-      if (!email || !password) {
-        alert("Please fill in both email and password.");
-        setLoading(false);
-        return;
-      }
-
-      // Register user with email and password
-      const userCredential = await registerWithEmailAndPassword(email, password);
-      
-      // Store additional user information in Firestore
-      const userRef = collection(db, 'users');
-      await addDoc(userRef, {
-        uid: userCredential.user.uid,
-        name: name,
-        email: email,
-      });
-      
-      navigate('/'); // Navigate after successful registration
-    } catch (error) {
-      console.error('Error registering user:', error.message);
-      alert(`Error: ${error.message}`);
+      await createUserWithEmailAndPassword(auth, email, password)
+      console.log("Account Created")
+      navigate('/'); 
+    } catch (err) {
+      console.log(err);
+      alert(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -56,7 +39,7 @@ const Register = () => {
         <div className='flex justify-center items-center h-screen bg-gray-200'>
           <div className='px-40 py-10 shadow-lg bg-white rounded-md border-b-2 border-gray-300'>
             <h1 className='text-3xl block text-center font-semibold text-transparent bg-clip-text bg-gradient-to-r to-red-500 from-blue-900'>REGISTER</h1>
-            <form onSubmit={handleRegister} className='mt-3 px-30'>
+            <form onSubmit={handleSubmit} className='mt-3 px-30'>
               <div>
                 <label htmlFor='name' className='block text-base mb-2 text-lg'>Name</label>
                 <input
