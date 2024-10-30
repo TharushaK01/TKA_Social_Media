@@ -18,11 +18,7 @@ const Main = () => {
     const [image, setImage] = useState(null);
     const [file, setFile] = useState(null);
     const [progressBar, setProgressBar] = useState(0);
-
     const collectionRef = collection(db, "posts");
-    const postRef = doc(collection(db, "posts"));
-    const document = postRef.id;
-
     const [state, dispatch] = useReducer(postsReducer, postsStates);
     const { SUBMIT_POST, HANDLE_ERROR } = postActions;
 
@@ -32,28 +28,26 @@ const Main = () => {
 
     const handleSubmitPost = async (e) => {
         e.preventDefault();
+        const uid = user?.uid || userData?.uid;
+        const logo = user?.photoURL || userData?.logo;
+        const name = user?.displayName || userData?.name;
+        const email = user?.email || userData?.email;
 
-           // Check if `user` or `userData` is defined and contains `uid`
-    const uid = user?.uid || userData?.uid;
-    const logo = user?.photoURL || userData?.logo;
-    const name = user?.displayName || userData?.name;
-    const email = user?.email || userData?.email;
-
-    if (!uid) {
-        alert("User not authenticated. Please log in.");
-        return;
-    }
-
+        if (!uid) {
+            alert("User not authenticated. Please log in.");
+            return;
+        }
 
         if (text.current.value !== "") {
             try {
-                await setDoc(postRef, {
-                    uid: uid, // Ensures uid is defined
+                // Save the post data along with the image URL
+                await setDoc(doc(collectionRef), {
+                    uid: uid,
                     logo: logo,
                     name: name,
                     email: email,
                     text: text.current.value,
-                    image: image,
+                    image: image, // Ensure image URL is included
                     timestamp: serverTimestamp(),
                 });
                 text.current.value = "";
@@ -79,17 +73,19 @@ const Main = () => {
             const storageRef = ref(storage, `image/${file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
-            uploadTask.on("state_changed", (snapshot) => {
-                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                setProgressBar(progress);
-            }, 
-            (error) => {
-                alert(error);
-            },
-            async () => {
-                const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                setImage(downloadURL);
-            });
+            uploadTask.on("state_changed", 
+                (snapshot) => {
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setProgressBar(progress);
+                }, 
+                (error) => {
+                    alert(error);
+                },
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    setImage(downloadURL); // Save the image URL
+                }
+            );
         } catch (err) {
             dispatch({ type: HANDLE_ERROR });
             alert(err.message);
@@ -100,13 +96,16 @@ const Main = () => {
     useEffect(() => {
         const postData = async () => {
             const q = query(collectionRef, orderBy("timestamp", "asc"));
-            await onSnapshot(q, (snapshot) => {
+            const unsubscribe = onSnapshot(q, (snapshot) => {
                 dispatch({
                     type: SUBMIT_POST,
-                    posts: snapshot.docs.map((doc) => doc.data()),
+                    posts: snapshot.docs.map((doc) => ({
+                        ...doc.data(),
+                        documentId: doc.id, // Add document ID for future reference
+                    })),
                 });
 
-                if (scrollRef.current && typeof scrollRef.current.scrollIntoView === "function") {
+                if (scrollRef.current) {
                     scrollRef.current.scrollIntoView({ behavior: "smooth" });
                 }
 
@@ -114,9 +113,11 @@ const Main = () => {
                 setFile(null);
                 setProgressBar(0);
             });
+
+            return () => unsubscribe(); // Cleanup listener on unmount
         };
 
-        return () => postData();
+        postData();
     }, [SUBMIT_POST]);
 
     return (
@@ -124,15 +125,12 @@ const Main = () => {
             <div className="flex flex-col py-4 w-full bg-white rounded-3xl shadow-lg">
                 <div className="flex items-center border-b-2 border-gray-300 pb-4 pl-4 w-full">
                     <img className="h-10 mr-4" src={avatar} alt="avatar" />
-
-                       <form className="w-full relative pl-2" onSubmit={handleSubmitPost}>
+                    <form className="w-full relative pl-2" onSubmit={handleSubmitPost}>
                         <div className="flex items-center space-x-2">
                             <input
                                 type="text"
                                 name="text"
-                                placeholder={`What's on your mind ${
-                                    user?.displayName?.split(" ")[0] || userData?.name || ""
-                                }?`}
+                                placeholder={`What's on your mind ${user?.displayName?.split(" ")[0] || userData?.name || ""}?`}
                                 className="outline-none w-full bg-white rounded-md px-2" 
                                 ref={text}
                             />
@@ -157,12 +155,10 @@ const Main = () => {
                         <input id="addImage" type="file" style={{ display: "none" }} onChange={handleUpload} />
                     </label>
                     {file && (<button variant="text" onClick={submitImage}>Upload</button>)}
-
                     <div className="flex items-center">
                         <img className="h-10 mr-4" src={live} alt="live" />
                         <p className="font-roboto font-medium text-md text-gray-700">Live</p>
                     </div>
-
                     <div className="flex items-center">
                         <img className="h-10 mr-4" src={feeling} alt="feeling" />
                         <p className="font-roboto font-medium text-md text-gray-700">Feeling</p>
@@ -174,22 +170,22 @@ const Main = () => {
                 {state.error ? (
                     <div className="flex justify-center items-center">
                         <Alert color="red">
-                            Something went wrong refresh and try again...
+                            Something went wrong. Refresh and try again...
                         </Alert>
                     </div>
                 ) : (
                     <div>
                         {state.posts.length > 0 &&
-                        state?.posts?.map((post, index) =>{
-                            return(
+                        state?.posts?.map((post, index) => {
+                            return (
                                 <PostCards
                                     key={index}
                                     logo={post.logo}
-                                    id={post.documentId}
+                                    id={post.documentId} // Ensure document ID is passed
                                     uid={post?.uid}
                                     name={post.name}
                                     email={post.email}
-                                    image={post.image}
+                                    image={post.image} // Image URL from Firestore
                                     text={post.text}
                                     timestamp={post.timestamp ? new Date(post.timestamp.toDate()).toUTCString() : ''}
                                 />

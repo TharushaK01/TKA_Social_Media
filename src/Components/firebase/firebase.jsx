@@ -15,5 +15,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-export { auth, db, onAuthStateChanged };
+const monitorAuthState = (callback) => {
+  return onAuthStateChanged(auth, (user) => {
+    callback(user); 
+  });
+};
 
+export { auth, db, onAuthStateChanged, monitorAuthState };
