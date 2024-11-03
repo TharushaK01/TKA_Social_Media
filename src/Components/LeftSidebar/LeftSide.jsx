@@ -4,9 +4,9 @@ import sample from "../../assets/images/sample.jpg";
 
 import avatar from '../../assets/images/avatar.jpg';
 
-import job from "../../assets/images/job.jpg";
-import location from "../../assets/images/location.jpeg";
-import facebook from "../../assets/images/facebook.jpeg";
+import job from "../../assets/images/job.png";
+import location from "../../assets/images/location.png";
+import facebook from "../../assets/images/facebook.png";
 import twitter from "../../assets/images/twitter.jpg";
 import laptop from "../../assets/images/laptop.jpg";
 import media from "../../assets/images/media.jpg";
