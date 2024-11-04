@@ -2,7 +2,7 @@ import card1 from "../assets/images/Card1.jpg";
 import card2 from "../assets/images/Card2.jpg";
 import card3 from "../assets/images/Card3.jpg";
 import card4 from "../assets/images/Card4.jpg";
-import card5 from "../assets/images/Card5.jpg";
+import card5 from "../assets/images/Card6.jpg";
 
 export const cardData = [
     {

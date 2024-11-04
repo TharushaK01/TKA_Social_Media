@@ -1,8 +1,8 @@
 import React, { useRef, useContext, useState, useReducer, useEffect } from "react";
 import avatar from "../../assets/images/avatar.jpg";
-import live from "../../assets/images/live.jpg";
-import feeling from "../../assets/images/feeling.jpg";
-import addImage from "../../assets/images/addImage.jpg";
+import live from "../../assets/images/Live.png";
+import feeling from "../../assets/images/feelings.png";
+import addImage from "../../assets/images/addImage.png";
 import { AuthContext } from "../AppContext/AppContext";
 import { doc, setDoc, collection, serverTimestamp, query, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase";

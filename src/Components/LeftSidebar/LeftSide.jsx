@@ -7,18 +7,12 @@ import avatar from '../../assets/images/avatar.jpg';
 import job from "../../assets/images/job.png";
 import location from "../../assets/images/location.png";
 import facebook from "../../assets/images/facebook.png";
-import twitter from "../../assets/images/twitter.jpg";
+import twitter from "../../assets/images/twitter.png";
 import laptop from "../../assets/images/laptop.jpg";
 import media from "../../assets/images/media.jpg";
 import apps from "../../assets/images/apps.jpg";
 import tik from "../../assets/images/tik.jpg";
 import { AuthContext } from "../AppContext/AppContext";
-
-
-{/*import { Tooltip } from "@material-tailwind/react";
-import { Avatar } from "@material-tailwind/react";
-import avatar from "../../assets/images/avatar.jpg";*/}
-
 
 
 const LeftSide = () => {
